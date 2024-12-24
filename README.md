@@ -1,6 +1,8 @@
 # Geschichten aus der Geschichte - Podcast Episodes in chronological Order
 
-- gewidmet meiner wunderbaren Mama -
+```bath
+gewidmet meiner wunderbaren Mama
+```
 
 This project  creates a chronological ordering of the "Geschichten aus der Geschichte" (GAG) podcast episodes by analyzing episode descriptions using web crawling and Large Language Models (LLM).
 
