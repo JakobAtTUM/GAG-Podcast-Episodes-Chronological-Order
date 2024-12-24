@@ -3,7 +3,8 @@
 This project  creates a chronological ordering of the "Geschichten aus der Geschichte" (GAG) podcast episodes by analyzing episode descriptions using web crawling and Large Language Models (LLM).
 
 View the complete chronological episode list:
-- [View in GitHub](./output/episode_data.csv)
+- [View in Google Docs]: https://docs.google.com/spreadsheets/d/1NTHLJ2dXjYzTl28tmD_aj-8g-lZU00N_I18T0v9nFoo/edit?usp=sharing
+- ⚠️ As the episodes are automatically parsed using a Large Language Model using only their episode description, there will be errors in the dataset. If you notice errors, please leave a comment in my google sheets document so that I can change it.
 
 ## 📝 Description
 
@@ -12,8 +13,11 @@ The "Geschichten aus der Geschichte" podcast presents historical episodes in a n
 2. Extracts episode descriptions
 3. Uses Google's Gemini LLM to determine the historical time period
 
-## 🚀 Features
-
+## 🚀 Ideas for future contributions (please contribute to this project)
+- Make the dates more robust using RAG (Retrieval Agumented Generation) by incorporating additional data sources such as wikipedia or wikidata.
+- Write functions to automatically update the episodes to spotify.
+- Use the dates to do some interesting data science.
+- ... and many more, please feel free to make suggestions
 
 ## 📋 Prerequisites
 
