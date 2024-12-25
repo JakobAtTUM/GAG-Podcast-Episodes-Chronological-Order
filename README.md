@@ -1,14 +1,13 @@
-# Geschichten aus der Geschichte - Podcast Episodes in chronologischer Reihenfolge (history podcast episodes in chronological order)
-
-```bath
-gewidmet meiner wunderbaren Mama
-```
+# Geschichten aus der Geschichte - Podcast Episoden in chronologischer Reihenfolge 
 
 
-View the complete chronological episode list:
-- View in Google Docs: https://docs.google.com/spreadsheets/d/1NTHLJ2dXjYzTl28tmD_aj-8g-lZU00N_I18T0v9nFoo/edit?usp=sharing
-- ⚠️ As the episodes are automatically parsed using a Large Language Model using only their episode description, there will be errors in the dataset. If you notice errors, please leave a comment in my google sheets document so that I can change it.
+Ihr könnt jetzt die Geschichten aus der Geschichte Episoden in chronologischer Reihenfolge hören! Mithilfe der Episodenbeschreibung, Wikipedia und Künstlicher Intelligent habe ich automatisiert ein Jahresdatum für Anfangs- und Enddaten der Folgen generiert. Wie immer bei KI Anwendungen können sich Fehler in die Ergebnisse eingeschlichen haben, ich freue mich wenn ihr bemerkte Fehler meldet.
 
+- In dieser Google Docs Tabelle sind die Episoden nach Reihenfolge sortiert: https://docs.google.com/spreadsheets/d/1NTHLJ2dXjYzTl28tmD_aj-8g-lZU00N_I18T0v9nFoo/edit?usp=sharing
+
+- In dieser Playlist auf Spotify könnt ihr die Episoden chronolgisch sortiert hören: https://open.spotify.com/playlist/5rYPDJ78VkOsERQOVWrat3?si=008301dddafa4641
+
+# German history Podcast 'Geschichten aus der Geschichte' episodes in chronological order
 
 ## 📝 Technical Project Description
 This project  creates a chronological ordering of the "Geschichten aus der Geschichte" (GAG) podcast episodes by analyzing episode descriptions using web crawling and Large Language Models (LLM). 
