@@ -8,7 +8,6 @@ Dependencies:
     - website_crawler: Contains web scraping functionality
     - write_to_csv: Contains CSV writing utilities
 """
-import re
 from llm_call import get_wikipedia_search_term_from_episode_information, get_year_from_episode_information
 from website_crawler import extract_relevant_episode_data
 from wikipedia_summary import get_wikipedia_summary
@@ -30,12 +29,10 @@ def crawl_gag_episode(url: str):
             - year_until: End year of historical period
     """
 
-
-    print(f"Crawling from url: {url}")
-
     # Extract content from webpage
+    print(f"Crawling from url: {url}")
     episode_information_dict = extract_relevant_episode_data(url=url)
-    print(f"crawled episode information from GAG: {episode_information_dict}")
+    print(f"crawled episode information from GAG website: {episode_information_dict}")
 
     # searching for wikipedia context and adding context to the episode summary
     wikipedia_search_term = get_wikipedia_search_term_from_episode_information(str(episode_information_dict))
@@ -89,22 +86,22 @@ def main():
     Main execution function that processes a range of podcast episodes.
     Crawls each episode page, extracts information, and saves to CSV.
     """
-    start_at_episode = 161
-    end_at_episode = 300
+    start_at_episode = 301
+    end_at_episode = 482
 
     for episode_num in range(start_at_episode, end_at_episode+1):
         print(f"Crawling episode: {episode_num}")
 
-        # Construct URL based on episode number: Episodes < 270 use 'zs' format, >= 270 use 'gag' format,
+        # Construct URL based on episode number: Episodes <= 270 use 'zs' format, > 270 use 'gag' format,
         # since GAG move from the name "Zeitsprung" to "Geschichten aus der Geschichte" at Episode 270
-        if episode_num < 270:
+        if episode_num <= 270:
             url = f"https://www.geschichte.fm/podcast/zs{str(episode_num).zfill(2)}/"
         else:
             url = f"https://www.geschichte.fm/archiv/gag{str(episode_num).zfill(2)}/"
 
         # Process episode and write results
         result = crawl_gag_episode(url)
-        if result["year_from"] is not None:
+        if result["year_from"] not in [None, "unknown"]:
             write_to_csv(result, "output/episode_data.csv")
         else:
             write_to_csv(result, "output/errors_while_parsing.csv")
