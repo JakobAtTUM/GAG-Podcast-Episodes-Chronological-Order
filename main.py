@@ -46,7 +46,7 @@ def crawl_gag_episode(url: str):
             episode_information_dict["Wikipedia-Informationen"] = str(wikipedia_summary)
 
         # Get time period prediction from LLM
-        llm_year_estimate = get_year_from_episode_information(episode_information_dict, 3)
+        llm_year_estimate = get_year_from_episode_information(episode_information_dict, 4)
         print(f"llm_year_estimate: {llm_year_estimate}")
 
 
@@ -86,8 +86,8 @@ def main():
     Main execution function that processes a range of podcast episodes.
     Crawls each episode page, extracts information, and saves to CSV.
     """
-    start_at_episode = 301
-    end_at_episode = 482
+    start_at_episode = 93
+    end_at_episode = 93
 
     for episode_num in range(start_at_episode, end_at_episode+1):
         print(f"Crawling episode: {episode_num}")
@@ -101,7 +101,7 @@ def main():
 
         # Process episode and write results
         result = crawl_gag_episode(url)
-        if result["year_from"] not in [None, "unknown"]:
+        if result["year_from"] not in [None, "unknown", "Unknown"]:
             write_to_csv(result, "output/episode_data.csv")
         else:
             write_to_csv(result, "output/errors_while_parsing.csv")

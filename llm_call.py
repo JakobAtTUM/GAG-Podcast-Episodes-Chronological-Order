@@ -162,6 +162,7 @@ def get_year_from_episode_informationOld(text, max_reps = 3):
         2. Wenn keine genauen Daten genannt werden, nutzen Sie Ihr Wissen, um eine fundierte Schätzung vorzunehmen.
         3. Wenn ein einjähriges Ereignis erwähnt wird, verwenden Sie dasselbe Jahr als Anfangs- und Enddatum.
         5. Wenn eine Zeitspanne nur grob angegeben ist, z.B. Mittelalter oder altes Ägypten, dann wähle die Zeitspanne für das Mittelalter oder alte Ägypten aus.
+        6. Wenn nur ein Jahrzehnt angegeben ist, z.B. "1950er Jahre" oder "1950ger", dann gebe das Jahrzehnt von "start_date": "1950" bis "end_date": "1959" an.
 
         Hier sind einige Beispiele:
 
@@ -190,6 +191,7 @@ def get_year_from_episode_informationOld(text, max_reps = 3):
             - Geben Sie genaue Daten an, wenn sie klar angegeben sind.
             - Nehmen Sie fundierte Schätzungen auf der Grundlage des historischen Kontexts vor, wenn keine genauen Daten angegeben sind.
             - Nehmen Sie nur fundierte Schätzung der Jahreszahlen vor, wenn sie den historischen Kontext gut einschätzen können.
+            - Es geht um einen Geschichtspodcast, es gibt keine Content Bedenken wegen Gefährlichem Inhalt
             - Geben Sie Ihre Antwort im JSON-Format mit den Feldern „start_date“ und „end_date“ zurück.
 
         
@@ -244,11 +246,28 @@ def get_wikipedia_search_term_from_episode_information(text):
     5. Fügen Sie keinen erklärenden Text oder mehrere Optionen ein.
 
     Beispiel 1:
-    Input: „Frühes Mittelalter in Italien: Die Zeiten sind rau, alle wollen ein Stück vom Kuchen des ehemaligen weströmischen Reichs abhaben. Einer von ihnen ist Alboin, Langobardenkönig. Und wie so oft, war auch ihm kein Greisenalter vergönnt.“
+    Input: „GAG01 Vier Langobarden-Könige und ein Trinkbecher: Frühes Mittelalter in Italien: Die Zeiten sind rau, alle wollen ein Stück vom Kuchen des ehemaligen weströmischen Reichs abhaben. Einer von ihnen ist Alboin, Langobardenkönig. Und wie so oft, war auch ihm kein Greisenalter vergönnt.“
     Output: „Alboin“
     
-    Input: "Mit Kind und Kegel: Wer oder was ist eigentlich der »Kegel«? In diesem Zeitsprung gehen wir dieser Frage nach, sehen uns einen dieser Kegel genauer an und reisen gemeinsam von Regensburg nach Madrid und Brüssel. Wieder mal mit der großartigen stimmlichen Unterstützung\xa0von Martin Hemmer.'
+    Beispiel 2:
+    Input: "GAG11: Von Kindern und Kegeln: Wer oder was ist eigentlich der »Kegel«? In diesem Zeitsprung gehen wir dieser Frage nach, sehen uns einen dieser Kegel genauer an und reisen gemeinsam von Regensburg nach Madrid und Brüssel. Wieder mal mit der großartigen stimmlichen Unterstützung von Martin Hemmer."
     Output: "Kind und Kegel"
+    
+    Beispiel 3:
+    Input: "GAG422: Eine kleine Geschichte der Parapsychologie. Wir springen diesmal an den Beginn des 20. Jahrhunderts. Schauplatz ist Österreich, wo sich ein neuer Forschungszweig etabliert. Erzählt von Anna Masoner, widmen wir uns einer Zeit, in der viele Dinge noch möglich schienen. Mittendrin ein Dienstmädchen namens Wilma, dessen Fähigkeiten nun in den Fokus eben jener Forschung rücken."
+    Output: "Parapsychologie"
+    
+    Beispiel 4:
+    Input: "GAG182: Der Zündholzkönig Ivar Kreuger. Wir springen in die 1920er Jahre und beschäftigen uns mit Streichhölzern: Genauer gesagt, mit dem Mann, der mit Streichhölzern ein gigantisches Firmenimperium aufgebaut hat, im Zentrum des amerikanischen Börsenbooms stand, zahlreiche Finanzprodukte erfunden und einen Finanzskandal ausgelöst hat, der 1933 und 1934 zur Regulierung der Börsen in den USA geführt hat. Sein Geschäftsmodell: Kredite an Staaten zahlen und im Gegenzug dort ein Zündholzmonopol erhalten. Auf diese Weise wurde Kreuger zum größten Kreditgeber für Europa. Der Deal mit Deutschland aus dem Jahr 1930 hatte bis ins Jahr 1983 bestand. Bis dahin durften in Deutschland nur Zündhölzer der Marken Welthölzer und Haushaltsware produziert und verkauft werden."
+    Output: "Ivar Kreuger"
+    
+    Beispiel 5:
+    Input: "GAG441: Jemima Nicholas und die Schlacht von Fishguard. Wir springen in dieser Folge ans Ende des 18. Jahrhunderts. Im Zuge der Revolutionskriege wird von Frankreich der Plan einer Invasion Großbritanniens ausgeheckt. Ausgangsort soll Irland sein, doch nichts läuft so wie geplant. Schlussendlich wird es vor allem eine Schusterin aus Wales werden, deren Andenken heute noch an diese letzte Invasion Großbritanniens erinnert. Das Episodenbild zeigt einen Ausschnitt einer Darstellung der Landung der Franzosen in Wales, aus einem zeitgenössischen Reiseführer."
+    Output: "Jemima Nicholas"
+    
+    Beispiel 6:
+    Input: "GAG04: Wellingtons Rache, oder: Ein Bein für ein Königreich. Wir springen in die Zeit der napoleonischen Kriege, genauer zu ihrer finalen Schlacht: Bei Waterloo findet nicht nur die Herrschaft der hundert Tage ein Ende, auch ein Bein sieht seinen letzten Tag. Wir erzählen euch, was es damit auf sich hat. Danke an Martin Hemmer für die Stimmen Wellingtons und Pagets."
+    Output: "Schlacht bei Waterloo"
 
     Analysieren Sie nun bitte die folgende Episodenbeschreibung und antworten Sie mit einen einzelnen Suchbegriff:
 
