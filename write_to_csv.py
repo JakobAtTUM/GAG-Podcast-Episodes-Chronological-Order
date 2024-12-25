@@ -4,7 +4,7 @@ import csv
 
 def write_to_csv(episode_dict, filename = "output/episode_data.csv", fieldnames=None):
     if fieldnames is None:
-        fieldnames = ['title', 'summary', 'year_from', 'year_until']
+        fieldnames = ['title', 'summary', 'year_from', 'year_until', 'url']
     try:
         # Convert single dictionary to DataFrame
         df = pd.DataFrame([episode_dict])

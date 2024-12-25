@@ -14,7 +14,7 @@ from wikipedia_summary import get_wikipedia_summary
 from write_to_csv import write_to_csv
 
 
-def crawl_gag_episode(url: str):
+def _crawl_gag_episode(url: str):
     """
     Crawls a single podcast episode page and extracts relevant information.
 
@@ -48,8 +48,6 @@ def crawl_gag_episode(url: str):
         # Get time period prediction from LLM
         llm_year_estimate = get_year_from_episode_information(episode_information_dict, 4)
         print(f"llm_year_estimate: {llm_year_estimate}")
-
-
 
         # Compile results
         result = {
@@ -86,8 +84,8 @@ def main():
     Main execution function that processes a range of podcast episodes.
     Crawls each episode page, extracts information, and saves to CSV.
     """
-    start_at_episode = 93
-    end_at_episode = 93
+    start_at_episode = 26
+    end_at_episode = 26
 
     for episode_num in range(start_at_episode, end_at_episode+1):
         print(f"Crawling episode: {episode_num}")
@@ -100,7 +98,7 @@ def main():
             url = f"https://www.geschichte.fm/archiv/gag{str(episode_num).zfill(2)}/"
 
         # Process episode and write results
-        result = crawl_gag_episode(url)
+        result = _crawl_gag_episode(url)
         if result["year_from"] not in [None, "unknown", "Unknown"]:
             write_to_csv(result, "output/episode_data.csv")
         else:
