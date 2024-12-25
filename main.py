@@ -9,8 +9,9 @@ Dependencies:
     - write_to_csv: Contains CSV writing utilities
 """
 import re
-from llm_call import create_prompt, get_gemini_response
+from llm_call import get_wikipedia_search_term_from_episode_information, get_year_from_episode_information
 from website_crawler import extract_relevant_episode_data
+from wikipedia_summary import get_wikipedia_summary
 from write_to_csv import write_to_csv
 
 
@@ -29,52 +30,56 @@ def crawl_gag_episode(url: str):
             - year_until: End year of historical period
     """
 
+
+    print(f"Crawling from url: {url}")
+
+    # Extract content from webpage
+    episode_information_dict = extract_relevant_episode_data(url=url)
+    print(f"crawled episode information from GAG: {episode_information_dict}")
+
+    # searching for wikipedia context and adding context to the episode summary
+    wikipedia_search_term = get_wikipedia_search_term_from_episode_information(str(episode_information_dict))
+    print(f"wikipedia search term: {wikipedia_search_term}")
+
+
     try:
-        print(f"Crawling from url: {url}")
+        wikipedia_summary = get_wikipedia_summary(wikipedia_search_term)
+        print(f"wikipedia summary: {wikipedia_summary}")
+        if wikipedia_summary is not None:
+            episode_information_dict["Wikipedia-Informationen"] = str(wikipedia_summary)
 
-        # Extract content from webpage
-        crawled_result = extract_relevant_episode_data(url=url)
-        print(f"crawled result: {crawled_result}")
+        # Get time period prediction from LLM
+        llm_year_estimate = get_year_from_episode_information(episode_information_dict, 3)
+        print(f"llm_year_estimate: {llm_year_estimate}")
 
-        # Get time period prediction from LLM by first adding creating the prompt
-        # and then asking for a year guess (get_gemini_response())
-        prompt = create_prompt(crawled_result['summary'])
-        year_result = get_gemini_response(prompt)
-        print(f"year result: {year_result}")
 
-        # Retry LLM call up to 5 times if date is unknown, to see if it guesses a valid date with multiple trials
-        if not re.match(r'^[+-]\d{4}$', str(year_result['start_date'])):
-            for i in range(5):
-                print(f"Did not find start_date for attempt number {i}/5; try again")
-                year_result = get_gemini_response(prompt)
-                if re.match(r'^[+-]\d{4}$', str(year_result['start_date'])):
-                    print(f"Did find start_date; updated year result to: {year_result}")
-                    break
 
         # Compile results
         result = {
-            "title": crawled_result['title'],
-            "summary": crawled_result['summary'],
-            "year_from": year_result['start_date'],
-            "year_until": year_result['end_date']
+            "title": episode_information_dict['title'],
+            "summary": episode_information_dict['summary'],
+            "year_from": llm_year_estimate['start_date'],
+            "year_until": llm_year_estimate['end_date'],
+            "url" : url
         }
         return result
 
     except ValueError as e:
         # Handles safety filter triggers and content policy violations
-        print(f"Safety filter triggered: {e} at crawled result: {crawled_result}")
+        print(f"Safety filter triggered: {e}")
     except ConnectionError as e:
         # Handles API connection issues
         print(f"Connection error: {e}")
-    # except Exception as e:
-    #     # Catches any other unexpected errors
-    #     print(f"Unexpected error: {e}")
+    except Exception as e:
+        # Catches any other unexpected errors
+        print(f"Unexpected error: {e}")
 
     result = {
-        "title": crawled_result['title'],
-        "summary": "",
-        "year_from": "",
-        "year_until": ""
+        "title": episode_information_dict['title'],
+        "summary": episode_information_dict['summary'],
+        "year_from": None,
+        "year_until": None,
+        "url": url,
     }
     return result
 
@@ -84,15 +89,14 @@ def main():
     Main execution function that processes a range of podcast episodes.
     Crawls each episode page, extracts information, and saves to CSV.
     """
-    start_at_episode = 7
-    end_at_episode = 100
+    start_at_episode = 161
+    end_at_episode = 300
 
     for episode_num in range(start_at_episode, end_at_episode+1):
         print(f"Crawling episode: {episode_num}")
 
-        # Construct URL based on episode number
-        # Episodes < 270 use 'zs' format, >= 270 use 'gag' format, since GAG move from the name
-        # "Zeitsprung" to "Geschichten aus der Geschichte" at Episode 270
+        # Construct URL based on episode number: Episodes < 270 use 'zs' format, >= 270 use 'gag' format,
+        # since GAG move from the name "Zeitsprung" to "Geschichten aus der Geschichte" at Episode 270
         if episode_num < 270:
             url = f"https://www.geschichte.fm/podcast/zs{str(episode_num).zfill(2)}/"
         else:
@@ -100,13 +104,12 @@ def main():
 
         # Process episode and write results
         result = crawl_gag_episode(url)
-        if re.match(r'^[+-]\d{4}$', str(result['year_from'])):
+        if result["year_from"] is not None:
             write_to_csv(result, "output/episode_data.csv")
         else:
             write_to_csv(result, "output/errors_while_parsing.csv")
 
-
-        print(f"Finished parsing episode: {episode_num}")
+        print(f"Finished parsing episode: {episode_num} \n\n")
 
 
 if __name__ == '__main__':
