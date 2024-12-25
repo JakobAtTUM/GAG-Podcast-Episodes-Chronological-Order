@@ -5,7 +5,7 @@ Ihr könnt jetzt die Geschichten aus der Geschichte Episoden in chronologischer 
 
 - In dieser Google Docs Tabelle sind die Episoden nach Reihenfolge sortiert: https://docs.google.com/spreadsheets/d/1NTHLJ2dXjYzTl28tmD_aj-8g-lZU00N_I18T0v9nFoo/edit?usp=sharing
 
-- In dieser Playlist auf Spotify könnt ihr die Episoden chronolgisch sortiert hören: https://open.spotify.com/playlist/5rYPDJ78VkOsERQOVWrat3?si=008301dddafa4641
+- In dieser Playlist auf Spotify könnt ihr die Episoden chronolgisch sortiert hören: [currently not available] 
 
 # German history Podcast 'Geschichten aus der Geschichte' episodes in chronological order
 
