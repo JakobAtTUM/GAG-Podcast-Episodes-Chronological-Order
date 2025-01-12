@@ -8,7 +8,9 @@ Dependencies:
     - website_crawler: Contains web scraping functionality
     - write_to_csv: Contains CSV writing utilities
 """
-from llm_call import get_wikipedia_search_term_from_episode_information, get_year_from_episode_information
+from llm_call import get_wikipedia_search_term_from_episode_information, get_year_from_episode_information, \
+    get_goelocation_from_episode_information
+from location import get_coordinates_google
 from website_crawler import extract_relevant_episode_data
 from wikipedia_summary import get_wikipedia_summary
 from write_to_csv import write_to_csv
@@ -46,16 +48,33 @@ def _crawl_gag_episode(url: str):
             episode_information_dict["Wikipedia-Informationen"] = str(wikipedia_summary)
 
         # Get time period prediction from LLM
-        llm_year_estimate = get_year_from_episode_information(episode_information_dict, 4)
-        print(f"llm_year_estimate: {llm_year_estimate}")
+        #llm_year_estimate = get_year_from_episode_information(episode_information_dict, 4)
+        #print(f"llm_year_estimate: {llm_year_estimate}")
+
+        llm_geolocation_estimate = get_goelocation_from_episode_information(str(episode_information_dict))
+        print(f"llm_geolocation_estimate: {llm_geolocation_estimate}")
+
+        if llm_geolocation_estimate != "Unknown":
+            coordinates = get_coordinates_google(llm_geolocation_estimate)
+            print(f"llm_coordinates: {coordinates}")
+
+            latitude = coordinates[0]
+            longitude = coordinates[1]
+
+        else:
+            latitude = None
+            longitude = None
 
         # Compile results
         result = {
             "title": episode_information_dict['title'],
-            "summary": episode_information_dict['summary'],
-            "year_from": llm_year_estimate['start_date'],
-            "year_until": llm_year_estimate['end_date'],
-            "url" : url
+            #"summary": episode_information_dict['summary'],
+            "location" : llm_geolocation_estimate,
+            "latitude": latitude,
+            "longitude": longitude,
+            #"year_from": llm_year_estimate['start_date'],
+            #"year_until": llm_year_estimate['end_date'],
+            #"url" : url
         }
         return result
 
@@ -80,12 +99,13 @@ def _crawl_gag_episode(url: str):
 
 
 def main():
+
     """
     Main execution function that processes a range of podcast episodes.
     Crawls each episode page, extracts information, and saves to CSV.
     """
-    start_at_episode = 26
-    end_at_episode = 26
+    start_at_episode = 1
+    end_at_episode = 30
 
     for episode_num in range(start_at_episode, end_at_episode+1):
         print(f"Crawling episode: {episode_num}")
@@ -99,7 +119,7 @@ def main():
 
         # Process episode and write results
         result = _crawl_gag_episode(url)
-        if result["year_from"] not in [None, "unknown", "Unknown"]:
+        if True: #result["year_from"] not in [None, "unknown", "Unknown"]:
             write_to_csv(result, "output/episode_data.csv")
         else:
             write_to_csv(result, "output/errors_while_parsing.csv")

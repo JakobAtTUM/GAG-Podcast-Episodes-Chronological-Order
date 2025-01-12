@@ -3,7 +3,7 @@ import google.generativeai as genai
 import json
 import re
 
-def get_gemini_response(prompt: str, temperature: float = 0.3):
+def get_gemini_response(prompt: str, temperature: float = 0.3, max_output_tokens = 40):
     """
     Send a prompt to Gemini Pro and get response
 
@@ -28,7 +28,7 @@ def get_gemini_response(prompt: str, temperature: float = 0.3):
         'temperature': temperature,
         'top_p': 1.0,
         'top_k': 1,
-        'max_output_tokens': 40,
+        'max_output_tokens': max_output_tokens,
     }
 
     response = model.generate_content(
@@ -37,6 +37,46 @@ def get_gemini_response(prompt: str, temperature: float = 0.3):
     )
 
     return response
+
+
+def get_goelocation_from_episode_information(text: str):
+    prompt = f"""
+        Du bist ein Spezialist für die Analyse von Texten und die Extraktion von Ortsangaben. Deine Aufgabe ist es, aus der Beschreibung einer Podcast-Episode den wichtigsten geografischen Ort zu bestimmen.
+        
+        Regeln:
+        1. Wähle nur den EINEN wichtigsten Ort aus, der im Zentrum der Geschichte steht
+        2. Gib den Ort in seiner heutigen, modernen Bezeichnung an
+        3. Verwende die genaueste mögliche Ortsangabe (z.B. "Wien" statt "Österreich", wenn möglich)
+        4. Bei historischen Orten gib den heutigen Namen/die heutige Region an
+        5. Wenn kein konkreter Ort genannt wird, gib "Unknown" zurück
+        
+        Hier sind einige Beispiele:
+        
+            Beispiel 1:
+            Input: "Wir springen in dieser Folge ins Jahr 53 v.Chr., als sich in einer Ebene in Mesopotamien zwei Heere gegenüber stehen. Auf der einen Seite das des Partherreichs, auf der anderen eines der Römischen Republik."
+            Output: "Iraq"
+        
+            Beispiel 2:
+            Input: "Im November 1532 nehmen spanische Konquistadoren unter dem Kommando von Francisco Pizarro den letzten König der Inka gefangen: Atahualpa. Die Geschichte spielt in der alten Inka-Hauptstadt Cajamarca."
+            Output: "Cajamarca, Peru"
+        
+            Beispiel 3:
+            Input: "Wir sprechen über den Beamten Wolfgang von Kempelen, der in Wien einen faszinierenden Schachautomaten konstruierte, um die Kaiserin zu beeindrucken."
+            Output: "Vienna, Austria"
+        
+        Analysiere nun bitte die folgende Episodenbeschreibung und gib den wichtigsten Ort in der gleichen Form an:
+        
+        {text}
+        
+        Gib NUR den Ortsnamen zurück, keine zusätzlichen Erklärungen oder JSON-Formatierung.
+        """
+
+
+    # Initial attempt to get dates
+    response = get_gemini_response(prompt, temperature=0.9, max_output_tokens=30)
+    return response.text
+
+
 
 
 def get_year_from_episode_information(text: str, max_reps: int = 3) -> dict:
